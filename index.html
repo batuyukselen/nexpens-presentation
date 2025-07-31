@@ -1,0 +1,1494 @@
+<!DOCTYPE html><html lang="tr"><head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>nexpens: Yenilikçi Fatura ve Fiş Yönetimi Çözümü</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.5.0/mermaid.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+    <style>
+        @font-face {
+            font-family: 'TT Drugs';
+            src: url('TT Drugs Trial Bold.otf') format('opentype');
+            font-weight: 700;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'TT Drugs';
+            src: url('TT Drugs Trial Regular.otf') format('opentype');
+            font-weight: 400;
+            font-style: normal;
+        }
+        
+        .font-drugs {
+            font-size: 1em;
+            line-height: 1.2;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'serif': ['Playfair Display', 'serif'],
+                        'sans': ['Inter', 'sans-serif'],
+                        'drugs': ['TT Drugs', 'sans-serif'],
+                    },
+                    colors: {
+                        'primary': {
+                            50: '#fff7ed',
+                            100: '#ffedd5',
+                            200: '#ffd5a8',
+                            300: '#ffb671',
+                            400: '#ff8e53',
+                            500: '#ff6b35',
+                            600: '#f04a1a',
+                            700: '#e55a2b',
+                            800: '#b7411a',
+                            900: '#92371a',
+                        },
+                        'neutral': {
+                            50: '#f8f9fa',
+                            100: '#f1f3f4',
+                            200: '#e8eaed',
+                            300: '#dadce0',
+                            400: '#bdc1c6',
+                            500: '#9aa0a6',
+                            600: '#80868b',
+                            700: '#5f6368',
+                            800: '#3c4043',
+                            900: '#2c3e50',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            overflow-x: hidden;
+        }
+
+        .toc-fixed {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 280px;
+            height: 100vh;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 2rem 1.5rem;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.1);
+        }
+        
+        @media (max-width: 1024px) {
+            .toc-fixed {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            
+            .toc-fixed.active {
+                transform: translateX(0);
+            }
+        }
+
+        .main-content {
+            margin-left: 280px;
+            min-height: 100vh;
+        }
+
+        .hero-gradient {
+            background: linear-gradient(135deg, #ff6b35 0%, #ff8e53 50%, #e55a2b 100%);
+        }
+
+        .text-shadow {
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .glass-effect {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .hover-lift {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .citation {
+            color: #ff6b35;
+            font-weight: 600;
+            text-decoration: none;
+            border-bottom: 1px dotted #ff6b35;
+        }
+
+        .citation:hover {
+            background-color: rgba(255, 107, 53, 0.1);
+        }
+
+        .section-divider {
+            height: 2px;
+            background: linear-gradient(90deg, #ff6b35, #ff8e53, #e55a2b);
+            margin: 4rem 0;
+        }
+
+        .competitor-card {
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            border: 1px solid #e8eaed;
+            transition: all 0.3s ease;
+        }
+
+        .competitor-card:hover {
+            border-color: #ff6b35;
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.15);
+        }
+
+        .toc-link {
+            display: block;
+            color: #cbd5e1;
+            text-decoration: none;
+            padding: 0.75rem 1rem;
+            margin: 0.25rem 0;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 400;
+        }
+
+        .toc-link:hover, .toc-link.active {
+            background: rgba(255, 107, 53, 0.2);
+            color: #ff8e53;
+            transform: translateX(4px);
+        }
+
+        .toc-link.sub {
+            padding-left: 2rem;
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+
+        .bento-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        @media (max-width: 1024px) {
+            .toc-fixed {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            
+            .toc-fixed.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .bento-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .mermaid-control-btn:not(.reset-zoom) {
+                display: none;
+            }
+            .mermaid-controls {
+                top: auto;
+                bottom: 15px;
+                right: 15px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+            
+            .hero-gradient {
+                padding: 2rem 0;
+            }
+
+            .bento-grid {
+                gap: 1rem;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .text-xl {
+                font-size: 1rem;
+            }
+            
+            .text-2xl {
+                font-size: 1.25rem;
+            }
+            
+            .text-3xl {
+                font-size: 1.5rem;
+            }
+            
+            .text-4xl {
+                font-size: 1.75rem;
+            }
+            
+            .text-5xl {
+                font-size: 2rem;
+            }
+            
+            .text-6xl {
+                font-size: 2.5rem;
+            }
+            
+            .text-7xl {
+                font-size: 3rem;
+            }
+            
+            .text-8xl {
+                font-size: 3.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .hero-gradient {
+                padding: 1.5rem 0;
+            }
+            
+            .text-xl {
+                font-size: 0.9rem;
+            }
+            
+            .text-2xl {
+                font-size: 1.1rem;
+            }
+            
+            .text-3xl {
+                font-size: 1.25rem;
+            }
+            
+            .text-4xl {
+                font-size: 1.4rem;
+            }
+            
+            .text-5xl {
+                font-size: 1.6rem;
+            }
+            
+            .text-6xl {
+                font-size: 1.8rem;
+            }
+            
+            .text-7xl {
+                font-size: 2rem;
+            }
+            
+            .text-8xl {
+                font-size: 2.2rem;
+            }
+        }
+
+        .mermaid {
+            background: transparent !important;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: grab;
+            transition: transform 0.3s ease;
+            transform-origin: center center;
+            touch-action: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .mermaid svg {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .mermaid:active {
+            cursor: grabbing;
+        }
+
+        .mermaid-container {
+            display: flex;
+            justify-content: center;
+            min-height: 300px;
+            max-height: 800px;
+            background: #ffffff;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mermaid-container .mermaid {
+            width: 100%;
+            max-width: 100%;
+            height: 100%;
+            cursor: grab;
+            transition: transform 0.3s ease;
+            transform-origin: center center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            touch-action: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .mermaid-container .mermaid svg {
+            max-width: 100%;
+            height: 100%;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .mermaid-container .mermaid:active {
+            cursor: grabbing;
+        }
+
+        .mermaid-container.zoomed .mermaid {
+            height: 100%;
+            width: 100%;
+            cursor: grab;
+        }
+
+        .mermaid-controls {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            gap: 10px;
+            z-index: 20;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 8px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .mermaid-control-btn {
+            background: #ffffff;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #374151;
+            font-size: 14px;
+            min-width: 36px;
+            height: 36px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mermaid-control-btn:hover {
+            background: #f8fafc;
+            border-color: #3b82f6;
+            color: #3b82f6;
+            transform: translateY(-1px);
+        }
+
+        .mermaid-control-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Enhanced mermaid styling for better contrast and consistency */
+        .mermaid .node rect,
+        .mermaid .node circle,
+        .mermaid .node ellipse,
+        .mermaid .node polygon {
+            stroke-width: 3px !important;
+            stroke: #FF6B35 !important;
+            fill: #FF8E53 !important;
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+        }
+
+        .mermaid .node .label {
+            color: #FFFFFF !important;
+            font-weight: 700 !important;
+            font-size: 14px !important;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            font-family: 'Inter', sans-serif !important;
+        }
+
+        .mermaid .edgePath .path {
+            stroke: #E55A2B !important;
+            stroke-width: 3px !important;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .mermaid .edgeLabel {
+            background-color: #FFFFFF !important;
+            color: #2C3E50 !important;
+            font-weight: 600 !important;
+            font-size: 12px !important;
+            padding: 4px 8px !important;
+            border-radius: 4px !important;
+            border: 2px solid #FF6B35 !important;
+            font-family: 'Inter', sans-serif !important;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Different node colors with good contrast */
+        .mermaid .node:nth-child(2n) rect,
+        .mermaid .node:nth-child(2n) circle,
+        .mermaid .node:nth-child(2n) ellipse,
+        .mermaid .node:nth-child(2n) polygon {
+            fill: #FF6B35 !important;
+            stroke: #E55A2B !important;
+        }
+
+        .mermaid .node:nth-child(3n) rect,
+        .mermaid .node:nth-child(3n) circle,
+        .mermaid .node:nth-child(3n) ellipse,
+        .mermaid .node:nth-child(3n) polygon {
+            fill: #2C3E50 !important;
+            stroke: #1A252F !important;
+        }
+
+        .mermaid .node:nth-child(3n) .label {
+            color: #FFFFFF !important;
+        }
+
+        .mermaid .node:nth-child(4n) rect,
+        .mermaid .node:nth-child(4n) circle,
+        .mermaid .node:nth-child(4n) ellipse,
+        .mermaid .node:nth-child(4n) polygon {
+            fill: #F8F9FA !important;
+            stroke: #E8EAED !important;
+        }
+
+        .mermaid .node:nth-child(4n) .label {
+            color: #2C3E50 !important;
+            text-shadow: none !important;
+        }
+    </style>
+  </head>
+
+  <body class="bg-neutral-50 font-sans overflow-x-hidden">
+    <!-- Fixed Table of Contents -->
+    <nav class="toc-fixed">
+      <div class="mb-8">
+        <h3 class="text-xl font-bold text-white mb-4">İçindekiler</h3>
+        <div class="space-y-1">
+          <a href="#hero" class="toc-link">Giriş</a>
+          <a href="#executive-summary" class="toc-link">Yönetici Özeti</a>
+          <a href="#software-name" class="toc-link">1. Yazılım İsmi</a>
+          <a href="#name-rationale" class="toc-link sub">1.1 İsmin Gerekçesi</a>
+          <a href="#name-evaluation" class="toc-link sub">1.2 Uygunluk Değerlendirmesi</a>
+          <a href="#unique-advantages" class="toc-link">2. Benzersiz Avantajlar</a>
+          <a href="#brand-identity" class="toc-link sub">2.1 Turuncu Marka Kimliği</a>
+          <a href="#ai-technology" class="toc-link sub">2.2 AI ve OCR Teknolojisi</a>
+          <a href="#localization" class="toc-link sub">2.3 Lokalize Çözümler</a>
+          <a href="#user-interface" class="toc-link sub">2.4 Kullanıcı Dostu Arayüz</a>
+          <a href="#problems-solved" class="toc-link">3. Çözülen Sorunlar</a>
+          <a href="#manual-processing" class="toc-link sub">3.1 Manuel İşleme</a>
+          <a href="#data-errors" class="toc-link sub">3.2 Veri Hataları</a>
+          <a href="#sme-optimization" class="toc-link sub">3.3 KOBİ Optimizasyonu</a>
+          <a href="#compliance" class="toc-link sub">3.4 Yasal Uyumluluk</a>
+          <a href="#competitive-analysis" class="toc-link">4. Rakip Analizi</a>
+          <a href="#differentiation" class="toc-link sub">4.1 Farklılaşma</a>
+          <a href="#tech-advantages" class="toc-link sub">4.2 Teknolojik Avantajlar</a>
+          <a href="#market-focus" class="toc-link sub">4.3 Pazar Odaklılık</a>
+          <a href="#ux-pricing" class="toc-link sub">4.4 UX ve Fiyatlandırma</a>
+          <a href="#color-psychology" class="toc-link">5. Renk Psikolojisi</a>
+          <a href="#color-meaning" class="toc-link sub">5.1 Turuncunun Etkileri</a>
+          <a href="#palette-harmony" class="toc-link sub">5.2 Palet Uyumu</a>
+        </div>
+      </div>
+
+      <div class="mt-12 pt-8 border-t border-neutral-600">
+        <div class="text-center">
+          <div class="w-12 h-12 bg-primary-500 rounded-full mx-auto mb-4"></div>
+          <p class="text-sm text-neutral-300 font-drugs">nexpens</p>
+          <p class="text-xs text-neutral-400 mt-2">Gelecek Nesil AI Destekli
+            <br/>Masraf Yönetimi
+          </p>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Hero Section -->
+      <section id="hero" class="hero-gradient min-h-screen flex items-center">
+        <div class="container mx-auto px-8 py-16">
+          <div class="bento-grid">
+            <!-- Main Hero Content -->
+            <div class="space-y-8">
+              <div class="space-y-4">
+                <h1 class="font-drugs text-7xl lg:text-8xl font-bold text-white text-shadow leading-tight">
+                  nexpens
+                </h1>
+                <p class="text-xl lg:text-2xl text-white/90 font-light leading-relaxed max-w-2xl">
+                  Gelecek nesil AI destekli fatura ve fiş yönetiminde devrim yaratan, Türkiye pazarına özel tasarlanmış profesyonel çözüm
+                </p>
+              </div>
+
+              <div class="flex flex-wrap gap-4">
+                <div class="glass-effect px-6 py-3 rounded-full">
+                  <span class="text-white font-medium">#FF6B35</span>
+                </div>
+                <div class="glass-effect px-6 py-3 rounded-full">
+                  <span class="text-white font-medium">#FF8E53</span>
+                </div>
+                <div class="glass-effect px-6 py-3 rounded-full">
+                  <span class="text-white font-medium">#E55A2B</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Hero Visual -->
+            <div class="relative">
+              <img src="nexpens logo (2).png" alt="nexpens logo" class="w-full h-96 object-contain rounded-2xl shadow-2xl"/>
+              <div class="absolute inset-0 bg-gradient-to-t from-primary-600/30 to-transparent rounded-2xl"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Executive Summary -->
+      <section id="executive-summary" class="py-20 bg-white">
+        <div class="container mx-auto px-8">
+          <div class="max-w-4xl mx-auto">
+            <h2 class="font-serif text-4xl font-bold text-neutral-900 mb-8">Yönetici Özeti</h2>
+
+            <div class="bg-gradient-to-br from-primary-50 to-primary-100 p-8 rounded-2xl mb-12">
+              <div class="space-y-6">
+                <p class="text-lg text-neutral-800 leading-relaxed">
+                  <strong class="text-primary-600 font-drugs">nexpens</strong>, gelecek nesil AI destekli fatura ve fiş yönetimi alanında Türkiye pazarına özel olarak tasarlanmış yenilikçi bir yazılım çözümüdür. Turuncu renk paletiyle geleneksel finans yazılımlarından ayrışan <span class="font-drugs">nexpens</span>, %99 OCR doğruluğu, Türkçe dil desteği ve e-fatura uyumluluğu gibi özelliklerle KOBİ'lerin finansal işlemlerini kolaylaştırmayı hedeflemektedir.
+                </p>
+
+                <div class="grid md:grid-cols-3 gap-6">
+                  <div class="text-center">
+                    <div class="w-16 h-16 bg-primary-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <i class="fas fa-robot text-white text-xl"></i>
+                    </div>
+                    <h3 class="font-semibold text-neutral-900 mb-2">Gelişmiş AI</h3>
+                    <p class="text-sm text-neutral-600">OCR teknolojisi ile yüksek doğruluk</p>
+                  </div>
+
+                  <div class="text-center">
+                    <div class="w-16 h-16 bg-primary-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <i class="fas fa-map-marker-alt text-white text-xl"></i>
+                    </div>
+                    <h3 class="font-semibold text-neutral-900 mb-2">Lokalize</h3>
+                    <p class="text-sm text-neutral-600">Türkiye pazarına özel çözümler</p>
+                  </div>
+
+                  <div class="text-center">
+                    <div class="w-16 h-16 bg-primary-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <i class="fas fa-mobile-alt text-white text-xl"></i>
+                    </div>
+                    <h3 class="font-semibold text-neutral-900 mb-2">Kullanıcı Dostu</h3>
+                    <p class="text-sm text-neutral-600">Sezgisel arayüz tasarımı</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="section-divider"></div>
+
+      <!-- Software Name Section -->
+      <section id="software-name" class="py-20 bg-neutral-50">
+        <div class="container mx-auto px-8">
+          <div class="max-w-6xl mx-auto">
+            <h2 class="font-serif text-5xl font-bold text-neutral-900 mb-12 text-center">Yazılım İsmi ve Marka Kimliği</h2>
+
+            <div class="bg-white rounded-3xl p-12 shadow-lg mb-12">
+              <div class="mb-8 text-center">
+                <img src="nexpens logo (3).png" alt="nexpens logo beyaz arka plan" class="h-64 object-contain mx-auto mb-6"/>
+              </div>
+
+              <div class="grid lg:grid-cols-2 gap-12">
+                <div id="name-rationale">
+                  <h4 class="text-xl font-semibold text-neutral-900 mb-6">İsmin Gerekçesi ve Anlamı</h4>
+                  <div class="space-y-4 text-neutral-700 leading-relaxed">
+                    <p>
+                      <strong class="text-primary-600 font-drugs">"nexpens"</strong> ismi, <strong>"next"</strong> (gelecek/sonraki) ve <strong>"expense"</strong> (masraf/harcama) kelimelerinin yaratıcı bir birleşimidir. Bu isim, yazılımın <strong>gelecek nesil masraf yönetimi</strong> yaklaşımını ve <strong>modern, yenilikçi</strong> doğasını mükemmel bir şekilde yansıtır.
+                    </p>
+                    <p>
+                      <strong class="text-primary-600">"Next"</strong> öneki, yazılımın <strong>ileriye dönük vizyonunu</strong>, <strong>teknolojik üstünlüğünü</strong> ve sektördeki <strong>yeni standartları belirleyen</strong> konumunu vurgular. Bu, özellikle <strong>AI ve makine öğrenmesi</strong> gibi ileri teknolojilerin kullanımını ima eder.
+                    </p>
+                    <p>
+                      İsmin <strong>2 heceli ve kolay telaffuz edilebilir</strong> (NEKS-pens) yapısı, hem Türkçe hem de İngilizce konuşan kullanıcılar için idealdir. Plosiv "X" sesi, isme <strong>güçlü ve akılda kalıcı</strong> bir karakter kazandırır.
+                    </p>
+                  </div>
+                </div>
+
+                <div id="name-evaluation">
+                  <h4 class="text-xl font-semibold text-neutral-900 mb-6">İsmin Uygunluğunun Değerlendirilmesi</h4>
+                  <div class="space-y-4 text-neutral-700 leading-relaxed">
+                    <p>
+                      <strong class="text-primary-600 font-drugs">"nexpens"</strong> ismi, fonksiyonel mükemmellik açısından çok başarılıdır. <strong>"Next generation expense management"</strong> (gelecek nesil masraf yönetimi) mesajını net bir şekilde iletir ve AI/teknoloji vurgusunu güçlü bir şekilde yapar.
+                    </p>
+                    <p>
+                      İsim, <strong>Expensify</strong> gibi global rakiplere benzer bir tonlama yaparken, <strong>"next"</strong> öneki sayesinde daha modern ve yenilikçi bir his verir. Bu, B2B SaaS pazarında <strong>rekabet avantajı</strong> sağlar.
+                    </p>
+                    <p>
+                      Türkiye pazarı için yapılan araştırmalarda, bu ismin hem <strong>özgün</strong> hem de <strong>sektöre uygun</strong> olduğu görülmektedir. İsim, yazılımın <strong>profesyonel</strong> ve <strong>güvenilir</strong> karakterini korurken, aynı zamanda <strong>dinamik ve yenilikçi</strong> imajını da başarıyla yansıtır.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Unique Advantages Section -->
+      <section id="unique-advantages" class="py-20 bg-white">
+        <div class="container mx-auto px-8">
+          <div class="max-w-6xl mx-auto">
+            <h2 class="font-serif text-5xl font-bold text-neutral-900 mb-16 text-center">Benzersiz Avantajlar (USP'ler)</h2>
+
+            <div class="grid lg:grid-cols-2 gap-12">
+              <!-- Brand Identity -->
+              <div id="brand-identity" class="bg-gradient-to-br from-primary-50 to-primary-100 p-8 rounded-2xl hover-lift">
+                <div class="flex items-center mb-6">
+                  <div class="w-12 h-12 bg-primary-500 rounded-full flex items-center justify-center mr-4">
+                    <i class="fas fa-palette text-white"></i>
+                  </div>
+                  <h3 class="text-2xl font-semibold text-neutral-900">Öne Çıkan Turuncu Marka Kimliği</h3>
+                </div>
+                <div class="space-y-4 text-neutral-700">
+                  <p>
+                    Finans ve muhasebe yazılımları genellikle mavi, yeşil veya gri gibi daha geleneksel renkleri tercih ederken, <span class="font-drugs">nexpens</span> <strong>canlı turuncu (#FF6B35), yumuşak turuncu (#FF8E53) ve koyu turuncu (#E55A2B)</strong> renklerini kullanarak rakiplerinden net bir şekilde ayrışır.
+                  </p>
+                  <p>
+                    Turuncu, <strong>enerji, sıcaklık, yaratıcılık ve hareketlilik</strong> gibi psikolojik çağrışımlara sahiptir. Bu da yazılımın <strong>yenilikçi, dinamik ve kullanıcı dostu</strong> bir deneyim sunma taahhüdünü yansıtır.
+                  </p>
+                </div>
+              </div>
+
+              <!-- AI Technology -->
+              <div id="ai-technology" class="bg-gradient-to-br from-neutral-50 to-neutral-100 p-8 rounded-2xl hover-lift">
+                <div class="flex items-center mb-6">
+                  <div class="w-12 h-12 bg-primary-500 rounded-full flex items-center justify-center mr-4">
+                    <i class="fas fa-brain text-white"></i>
+                  </div>
+                  <h3 class="text-2xl font-semibold text-neutral-900">Gelişmiş AI ve OCR Teknolojisi</h3>
+                </div>
+                <div class="space-y-4 text-neutral-700">
+                  <p>
+                    <strong>Gelişmiş Yapay Zeka (AI) ve Optik Karakter Tanıma (OCR) teknolojileri</strong> ile yüksek verimlilik sağlar. Fiş ve faturaların otomatik olarak taranması, verilerin çıkarılması ve sisteme kaydedilmesi, <strong>manuel veri girişi ihtiyacını büyük ölçüde ortadan kaldırır</strong>.
+                  </p>
+                  <p>
+                    AI'nın devreye girmesiyle, sistem sadece metni tanımakla kalmaz, aynı zamanda farklı belge türlerini, düzenleri ve hatta el yazısını anlama ve yorumlama yeteneğine de sahip olur. <a href="https://www.koncile.ai/en/extraction-ocr/orange-invoice" class="citation" target="_blank">[916]</a>
+                    <a href="https://www.turian.ai/use-cases/automated-e-invoice" class="citation" target="_blank">[920]</a>
+                  </p>
+                </div>
+              </div>
+
+              <!-- Localization -->
+              <div id="localization" class="bg-gradient-to-br from-primary-50 to-primary-100 p-8 rounded-2xl hover-lift">
+                <div class="flex items-center mb-6">
+                  <div class="w-12 h-12 bg-primary-500 rounded-full flex items-center justify-center mr-4">
+                    <i class="fas fa-map-marker-alt text-white"></i>
+                  </div>
+                  <h3 class="text-2xl font-semibold text-neutral-900">Türkiye Pazarına Özel Lokalizasyon</h3>
+                </div>
+                <div class="space-y-4 text-neutral-700">
+                  <p>
+                    <strong>Türkiye pazarına yönelik lokalize çözümler</strong> sunar. Bu, sadece arayüzün Türkçe dil desteği sunması anlamına gelmez, aynı zamanda <strong>Türkiye'deki mevzuata uygunluk</strong> (e-fatura, e-arşiv, e-defter gibi zorunluluklar) içerir.
+                  </p>
+                  <p>
+                    Türkiye'deki işletmelerin fatura ve fiş yönetiminde karşılaştığı özgün zorlukları anlamak ve yazılımı bu ihtiyaçları karşılayacak şekilde tasarlamak, rakiplere karşı önemli bir üstünlük sağlar. <a href="https://www.pikon.com/en/blog/turkey-einvoicing-earchive-edelivery-eledger-sap-document-compliance-acr-ecc-s4hana/" class="citation" target="_blank">[1004]</a>
+                  </p>
+                </div>
+              </div>
+
+              <!-- User Interface -->
+              <div id="user-interface" class="bg-gradient-to-br from-neutral-50 to-neutral-100 p-8 rounded-2xl hover-lift">
+                <div class="flex items-center mb-6">
+                  <div class="w-12 h-12 bg-primary-500 rounded-full flex items-center justify-center mr-4">
+                    <i class="fas fa-mobile-alt text-white"></i>
+                  </div>
+                  <h3 class="text-2xl font-semibold text-neutral-900">Kullanıcı Dostu Arayüz</h3>
+                </div>
+                <div class="space-y-4 text-neutral-700">
+                  <p>
+                    <strong>Kullanıcı dostu bir arayüz (UI) ve kolay kullanım</strong>, yazılımın önemli bir benzersiz avantajıdır. <strong>Modern ve sezgisel bir arayüz tasarımı</strong> ile öne çıkar.
+                  </p>
+                  <p>
+                    AI'nın sunduğu otomasyon, kullanıcıların karmaşık işlemleri birkaç tıklamayla gerçekleştirmesine olanak tanır. <strong>Fiş ve faturaların mobil kamera ile kolayca taranması</strong>, <strong>otomatik kategorilendirme</strong> ve anlaşılır raporlar, kullanıcı deneyimini üst düzeye çıkarır.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="section-divider"></div>
+
+      <!-- Problems Solved Section -->
+      <section id="problems-solved" class="py-20 bg-neutral-50">
+        <div class="container mx-auto px-8">
+          <div class="max-w-6xl mx-auto">
+            <h2 class="font-serif text-5xl font-bold text-neutral-900 mb-16 text-center">Çözülen Özel Sorunlar</h2>
+
+            <div class="space-y-12">
+              <!-- Manual Processing -->
+              <div id="manual-processing" class="bg-white rounded-2xl p-8 shadow-lg">
+                <div class="flex items-start space-x-6">
+                  <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-hand-paper text-red-600 text-xl"></i>
+                  </div>
+                  <div class="flex-1">
+                    <h3 class="text-2xl font-semibold text-neutral-900 mb-4">Manuel Fiş/Fatura İşleme Zorluklarının Ortadan Kaldırılması</h3>
+                    <div class="space-y-4 text-neutral-700">
+                      <p>
+                        Geleneksel yöntemlerde, kağıt fiş ve faturaların toplanması, sıralanması, verilerin elle bilgisayara girilmesi ve arşivlenmesi oldukça <strong>zaman alıcı ve hataya açık</strong> bir süreçtir.
+                      </p>
+                      <p>
+                        <span class="font-drugs">nexpens</span>, AI ve OCR teknolojisi sayesinde, fiş ve faturalardaki bilgileri otomatik olarak tarayıp, ilgili verileri <strong>yüksek doğrulukla çıkararak</strong> sisteme kaydeder. Bu, kullanıcıların saatler süren manuel veri girişi iş yükünü büyük ölçüde azaltır.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Data Errors -->
+              <div id="data-errors" class="bg-white rounded-2xl p-8 shadow-lg">
+                <div class="flex items-start space-x-6">
+                  <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-exclamation-triangle text-orange-600 text-xl"></i>
+                  </div>
+                  <div class="flex-1">
+                    <h3 class="text-2xl font-semibold text-neutral-900 mb-4">Veri Girişi Hatalarının ve Zaman Kaybının Azaltılması</h3>
+                    <div class="space-y-4 text-neutral-700">
+                      <p>
+                        Manuel veri girişi, kaçınılmaz olarak <strong>hatalara yol açar</strong>. Bu hatalar, muhasebe kayıtlarının yanlış olmasına, vergi beyannamelerinde sorunlara ve nihayetinde mali kayıplara neden olabilir.
+                      </p>
+                      <p>
+                        AI tabanlı fiş ve fatura tarama yazılımı, <strong>veri girişi hatalarını en aza indirerek</strong> bu sorunu çözer. OCR teknolojisi, metni yüksek doğrulukla tanırken, AI algoritmaları bu verileri doğrulayabilir, tutarsızlıkları tespit edebilir ve hatta eksik bilgileri tamamlayabilir.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- SME Optimization -->
+              <div id="sme-optimization" class="bg-white rounded-2xl p-8 shadow-lg">
+                <div class="flex items-start space-x-6">
+                  <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-chart-line text-green-600 text-xl"></i>
+                  </div>
+                  <div class="flex-1">
+                    <h3 class="text-2xl font-semibold text-neutral-900 mb-4">KOBİ'lerin Finansal İşlemlerinin Kolaylaştırılması ve Maliyet Optimizasyonu</h3>
+                    <div class="space-y-4 text-neutral-700">
+                      <p>
+                        Küçük ve Orta Büyüklükteki İşletmeler (KOBİ'ler) için finansal işlemlerin yönetimi genellikle sınırlı kaynaklar ve personel nedeniyle zorlu olabilir. <span class="font-drugs">nexpens</span>, <strong>KOBİ'lerin finansal işlemlerini önemli ölçüde kolaylaştırarak ve maliyetlerini optimize ederek</strong> bu sorunu çözer.
+                      </p>
+                      <p>
+                        Manuel fiş ve fatura işlemenin neden olduğu <strong>zaman ve işgücü maliyetleri</strong>, AI tabanlı otomasyonla azaltılır. Muhasebe entegrasyonları sayesinde, veriler doğrudan muhasebe yazılımlarına aktarılabilir, bu da <strong>muhasebeci maliyetlerini düşürebilir</strong>.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Compliance -->
+              <div id="compliance" class="bg-white rounded-2xl p-8 shadow-lg">
+                <div class="flex items-start space-x-6">
+                  <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-shield-alt text-blue-600 text-xl"></i>
+                  </div>
+                  <div class="flex-1">
+                    <h3 class="text-2xl font-semibold text-neutral-900 mb-4">E-Fatura ve E-Arşiv Uyumluluğu ile Yasal Yükümlülüklerin Karşılanması</h3>
+                    <div class="space-y-4 text-neutral-700">
+                      <p>
+                        Türkiye'de, <strong>e-fatura ve e-arşiv uygulamaları</strong> giderek yaygınlaşmakta ve işletmeler için <strong>yasal bir zorunluluk</strong> haline gelmektedir. <span class="font-drugs">nexpens</span>, <strong>e-fatura ve e-arşiv uyumluluğu sağlayarak</strong>, işletmelerin bu yasal yükümlülüklerini kolayca karşılamalarına yardımcı olur.
+                      </p>
+                      <p>
+                        Faturaların dijital olarak oluşturulması, gönderilmesi, alınması ve arşivlenmesi süreçlerini otomatikleştirebilir. <strong>Güvenli veri saklama ve kolay erişim imkanı</strong> sunarak, denetim süreçlerini de kolaylaştırır. <a href="https://faturamax.com/" class="citation" target="_blank">[635]</a>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Competitive Analysis Section -->
+      <section id="competitive-analysis" class="py-20 bg-white">
+        <div class="container mx-auto px-8">
+          <div class="max-w-7xl mx-auto">
+            <h2 class="font-serif text-5xl font-bold text-neutral-900 mb-16 text-center">Rakip Analizi ve Farklılaşma</h2>
+
+            <!-- Competitor Comparison -->
+            <div class="mb-16">
+              <h3 class="text-3xl font-semibold text-neutral-900 mb-8">Rakip Karşılaştırması</h3>
+
+              <div class="overflow-x-auto">
+                <table class="w-full bg-white rounded-2xl shadow-lg overflow-hidden">
+                  <thead class="bg-primary-500 text-white">
+                    <tr>
+                      <th class="px-6 py-4 text-left font-semibold">Rakip İsmi</th>
+                      <th class="px-6 py-4 text-left font-semibold">Temel Özellikler</th>
+                      <th class="px-6 py-4 text-left font-semibold">Fiyatlandırma</th>
+                      <th class="px-6 py-4 text-left font-semibold">Diğer Avantajlar</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-neutral-200">
+                    <tr class="bg-primary-50 hover:bg-primary-100 transition-colors">
+                      <td class="px-6 py-4 font-semibold text-primary-600 font-drugs">nexpens</td>
+                      <td class="px-6 py-4">Öne çıkan turuncu marka kimliği, Gelişmiş AI/OCR, Türkiye'ye özel lokalizasyon, Kullanıcı dostu arayüz</td>
+                      <td class="px-6 py-4">Belirlenecek</td>
+                      <td class="px-6 py-4">Türk KOBİ'lerine odaklı, e-fatura/e-arşiv uyumu, yüksek verimlilik</td>
+                    </tr>
+                    <tr class="hover:bg-neutral-50 transition-colors">
+                      <td class="px-6 py-4 font-medium">Expensify</td>
+                      <td class="px-6 py-4">Akıllı OCR, mobil kamera ile hızlı çekim, çoklu döviz, harcama politikası denetimi</td>
+                      <td class="px-6 py-4">$5/ay'dan başlar</td>
+                      <td class="px-6 py-4">Muhasebe entegrasyonları, otomatik onay akışları</td>
+                    </tr>
+                    <tr class="hover:bg-neutral-50 transition-colors">
+                      <td class="px-6 py-4 font-medium">Dext Prepare</td>
+                      <td class="px-6 py-4">Fiş/fatura toplu işleme, mobil/PC'den yükleme, banka ve e-ticaret entegrasyonu</td>
+                      <td class="px-6 py-4">$20/ay'dan başlar</td>
+                      <td class="px-6 py-4">11,500+ banka/ERP desteği</td>
+                    </tr>
+                    <tr class="hover:bg-neutral-50 transition-colors">
+                      <td class="px-6 py-4 font-medium">Zoho Expense</td>
+                      <td class="px-6 py-4">Güçlü OCR, çoklu dil ve para birimi, harcama raporları, otomatik fatura eşleştirme</td>
+                      <td class="px-6 py-4">Ücretsiz/Ücretli planlar</td>
+                      <td class="px-6 py-4">Diğer Zoho modülleriyle bütünleşik</td>
+                    </tr>
+                    <tr class="hover:bg-neutral-50 transition-colors">
+                      <td class="px-6 py-4 font-medium">QuickBooks Online</td>
+                      <td class="px-6 py-4">AI tabanlı fiş tanıma, otomatik kategori, gelir/gider takibi, mobil uygulama</td>
+                      <td class="px-6 py-4">$15/ay'dan başlar</td>
+                      <td class="px-6 py-4">TurboTax entegrasyonu</td>
+                    </tr>
+                    <tr class="hover:bg-neutral-50 transition-colors">
+                      <td class="px-6 py-4 font-medium">ReceiptsAI</td>
+                      <td class="px-6 py-4">%99 OCR doğruluğu, kategorilendirme, aylık rapor, toplu aktarım</td>
+                      <td class="px-6 py-4">$12/ay'dan başlar</td>
+                      <td class="px-6 py-4">Türk KOBİ'lere hitap eden girişim</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Differentiation Points -->
+            <div class="grid lg:grid-cols-2 gap-8">
+              <div id="differentiation" class="competitor-card p-8 rounded-2xl">
+                <h4 class="text-xl font-semibold text-neutral-900 mb-6">Renk ve Marka Kimliği ile Farklılaşma</h4>
+                <p class="text-neutral-700 mb-4">
+                  Finans ve muhasebe yazılımlarının çoğunluğu, güven, istikrar ve profesyonelliği temsil etmek için geleneksel olarak mavi, yeşil veya gri tonlarını kullanma eğilimindedir.
+                </p>
+                <p class="text-neutral-700">
+                  <span class="font-drugs">nexpens</span>, <strong>canlı turuncu renk paleti</strong> benimseyerek bu geleneği kırarak rakiplerinin arasında <strong>hemen fark edilir</strong> ve daha genç, modern, yenilikçi bir imaj sunar.
+                </p>
+              </div>
+
+              <div id="tech-advantages" class="competitor-card p-8 rounded-2xl">
+                <h4 class="text-xl font-semibold text-neutral-900 mb-6">Teknolojik Üstünlükler</h4>
+                <p class="text-neutral-700 mb-4">
+                  <strong>AI ve OCR teknolojilerini kullanarak</strong> rakiplerine karşı teknolojik üstünlükler sağlar. Özellikle <strong>Türkçe belgelerde daha yüksek doğruluk oranı</strong>, el yazısını daha iyi tanıma gibi konularda kendini geliştirir.
+                </p>
+                <p class="text-neutral-700">
+                  <strong>Sürekli öğrenen ve kendini geliştiren bir AI altyapısı</strong>, yazılımın uzun vadede teknolojik liderliğini korumasını sağlar. <a href="https://ossisto.com/blog/ai-invoice-processing-software/" class="citation" target="_blank">[668]</a>
+                </p>
+              </div>
+
+              <div id="market-focus" class="competitor-card p-8 rounded-2xl">
+                <h4 class="text-xl font-semibold text-neutral-900 mb-6">Pazar Odaklılık ve Lokalizasyon</h4>
+                <p class="text-neutral-700 mb-4">
+                  <strong>Türkiye pazarına odaklanması</strong> ve bu pazarın ihtiyaçlarına yönelik <strong>lokalize çözümler sunması</strong>, önemli bir farklılaşma avantajıdır.
+                </p>
+                <p class="text-neutral-700">
+                  Türkiye'deki <strong>e-fatura, e-arşiv, e-defter, e-irsaliye gibi yasal zorunluluklara tam uyum</strong>, yerel muhasebe standartlarına ve vergi mevzuatına uygun raporlama sağlar. <a href="https://www.pikon.com/en/blog/turkiye-updates-for-e-invoicing-e-fatura-as-of-july-2022/" class="citation" target="_blank">[1003]</a>
+                </p>
+              </div>
+
+              <div id="ux-pricing" class="competitor-card p-8 rounded-2xl">
+                <h4 class="text-xl font-semibold text-neutral-900 mb-6">Kullanıcı Deneyimi ve Fiyatlandırma</h4>
+                <p class="text-neutral-700 mb-4">
+                  <strong>Modern, sezgisel ve kullanımı kolay bir arayüz (UI)</strong> ile öne çıkar. Turuncu renk paletinin enerjik ve davetkar etkisi, arayüzün genel havasını olumlu yönde etkiler.
+                </p>
+                <p class="text-neutral-700">
+                  KOBİ'lerin bütçelerine uygun, <strong>esnek ve şeffaf planlar</strong> sunar. <strong>Rekabetçi fiyatlandırma</strong> ve ücretsiz deneme süresi ile pazara giriş yapar.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="section-divider"></div>
+
+      <!-- Color Psychology Section -->
+      <section id="color-psychology" class="py-20 bg-neutral-50">
+        <div class="container mx-auto px-8">
+          <div class="max-w-6xl mx-auto">
+            <h2 class="font-serif text-5xl font-bold text-neutral-900 mb-16 text-center">Renk Psikolojisi ve Markalaşma</h2>
+
+            <div class="grid lg:grid-cols-2 gap-12">
+              <div id="color-meaning" class="bg-white rounded-2xl p-8 shadow-lg">
+                <h3 class="text-2xl font-semibold text-neutral-900 mb-6">Turuncunun Psikolojik Etkileri</h3>
+                <div class="space-y-4 text-neutral-700">
+                  <p>
+                    Turuncu renk, psikolojik olarak <strong>enerji, sıcaklık, neşe, yaratıcılık, heyecan ve hareketlilik</strong> gibi duyguları çağrıştırır. Aynı zamanda <strong>uygun fiyatlılık ve erişilebilirlik</strong> hissi de uyandırabilir.
+                  </p>
+                  <p>
+                    Finans sektöründe, turuncu renk geleneksel olarak çok yaygın değildir; daha çok mavi (güven, istikrar, profesyonellik), yeşil (büyüme, para, sağlık) veya daha nötr tonlar tercih edilir.
+                  </p>
+                  <p>
+                    Ancak, turuncunun kullanımı, bir finansal ürün veya hizmetin <strong>yenilikçi, dinamik, kullanıcı dostu ve geleneksel kalıpların dışında</strong> olduğunu vurgulamak için kullanılabilir.
+                  </p>
+                </div>
+              </div>
+
+              <div id="palette-harmony" class="bg-white rounded-2xl p-8 shadow-lg">
+                <h3 class="text-2xl font-semibold text-neutral-900 mb-6">Seçilen Renk Paletinin Anlamı ve Uyumu</h3>
+                <div class="space-y-4 text-neutral-700">
+                  <p>
+                    Ana renk olarak belirlenen <strong>#FF6B35 (Canlı turuncu)</strong>, markanın <strong>enerjisini, yenilikçiliğini ve kullanıcı dostu karakterini</strong> ön plana çıkarır.
+                  </p>
+                  <p>
+                    İkincil renk olarak <strong>#FF8E53 (Yumuşak turuncu)</strong> kullanılarak, ana turuncunun yoğunluğu dengelenmiş ve daha geniş bir tasarım alanında uyum sağlanmıştır.
+                  </p>
+                  <p>
+                    Vurgu rengi olarak <strong>#E55A2B (Koyu turuncu)</strong> tercih edilerek, tasarımlarda derinlik ve kontrast yaratılabilir. Bu koyu ton, aynı zamanda profesyonellik ve sağlamlık hissi de katabilir.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Color Palette Visualization -->
+            <div class="mt-12 bg-white rounded-2xl p-8 shadow-lg">
+              <h3 class="text-2xl font-semibold text-neutral-900 mb-8 text-center">Renk Paleti Detayları</h3>
+
+              <div class="grid md:grid-cols-5 gap-6">
+                <div class="text-center">
+                  <div class="w-full h-32 bg-primary-500 rounded-xl mb-4 shadow-lg"></div>
+                  <h4 class="font-semibold text-neutral-900">Canlı Turuncu</h4>
+                  <p class="text-sm text-neutral-600">#FF6B35</p>
+                  <p class="text-xs text-neutral-500 mt-2">Enerji, Yenilikçilik</p>
+                </div>
+
+                <div class="text-center">
+                  <div class="w-full h-32 bg-primary-400 rounded-xl mb-4 shadow-lg"></div>
+                  <h4 class="font-semibold text-neutral-900">Yumuşak Turuncu</h4>
+                  <p class="text-sm text-neutral-600">#FF8E53</p>
+                  <p class="text-xs text-neutral-500 mt-2">Davetkarlık, Sıcaklık</p>
+                </div>
+
+                <div class="text-center">
+                  <div class="w-full h-32 bg-primary-700 rounded-xl mb-4 shadow-lg"></div>
+                  <h4 class="font-semibold text-neutral-900">Koyu Turuncu</h4>
+                  <p class="text-sm text-neutral-600">#E55A2B</p>
+                  <p class="text-xs text-neutral-500 mt-2">Profesyonellik, Derinlik</p>
+                </div>
+
+                <div class="text-center">
+                  <div class="w-full h-32 bg-white border-2 border-neutral-200 rounded-xl mb-4 shadow-lg"></div>
+                  <h4 class="font-semibold text-neutral-900">Beyaz</h4>
+                  <p class="text-sm text-neutral-600">#FFFFFF</p>
+                  <p class="text-xs text-neutral-500 mt-2">Temizlik, Saflık</p>
+                </div>
+
+                <div class="text-center">
+                  <div class="w-full h-32 bg-neutral-900 rounded-xl mb-4 shadow-lg"></div>
+                  <h4 class="font-semibold text-neutral-900">Koyu Gri</h4>
+                  <p class="text-sm text-neutral-600">#2C3E50</p>
+                  <p class="text-xs text-neutral-500 mt-2">Profesyonellik, Güven</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Process Flow Diagram -->
+      <section class="py-20 bg-white">
+        <div class="container mx-auto px-8">
+          <div class="max-w-4xl mx-auto">
+            <h3 class="text-3xl font-semibold text-neutral-900 mb-8 text-center"><span class="font-drugs">nexpens</span> İş Akışı</h3>
+
+            <div class="mermaid-container">
+              <div class="mermaid-controls">
+                <button class="mermaid-control-btn zoom-in" title="Yakınlaştır">
+                  <i class="fas fa-search-plus"></i>
+                </button>
+                <button class="mermaid-control-btn zoom-out" title="Uzaklaştır">
+                  <i class="fas fa-search-minus"></i>
+                </button>
+                <button class="mermaid-control-btn reset-zoom" title="Sıfırla">
+                  <i class="fas fa-expand-arrows-alt"></i>
+                </button>
+                <button class="mermaid-control-btn fullscreen" title="Tam ekran">
+                  <i class="fas fa-expand"></i>
+                </button>
+              </div>
+              <div class="mermaid" id="mermaid-diagram">
+                graph TD
+                A["Fatura/Fiş Alımı"] --> B["AI Destekli Tarama"]
+                B --> C["OCR ile Veri Çıkarma"]
+                C --> D["Veri Doğrulama"]
+                D --> E["Otomatik Kategorilendirme"]
+                E --> F["E-Fatura Dönüştürme"]
+                F --> G["Muhasebe Entegrasyonu"]
+                G --> H["Raporlama ve Analiz"]
+
+                style A fill:#ff6b35,stroke:#e55a2b,stroke-width:3px,color:#fff
+                style B fill:#ff8e53,stroke:#ff6b35,stroke-width:3px,color:#fff
+                style C fill:#2c3e50,stroke:#1a252f,stroke-width:3px,color:#fff
+                style D fill:#f8f9fa,stroke:#e8eaed,stroke-width:3px,color:#2c3e50
+                style E fill:#ff6b35,stroke:#e55a2b,stroke-width:3px,color:#fff
+                style F fill:#ff8e53,stroke:#ff6b35,stroke-width:3px,color:#fff
+                style G fill:#2c3e50,stroke:#1a252f,stroke-width:3px,color:#fff
+                style H fill:#f8f9fa,stroke:#e8eaed,stroke-width:3px,color:#2c3e50
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer class="bg-neutral-900 text-white py-16">
+        <div class="container mx-auto px-8">
+          <div class="max-w-4xl mx-auto text-center">
+            <div class="mb-8">
+              <h3 class="font-drugs text-3xl font-bold mb-4">nexpens</h3>
+              <p class="text-neutral-300 text-lg">Gelecek nesil AI destekli fatura ve fiş yönetiminde devrim yaratan çözüm</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8 mb-12">
+              <div>
+                <h4 class="font-semibold mb-4">Ana Renkler</h4>
+                <div class="space-y-2">
+                  <div class="flex items-center space-x-2">
+                    <div class="w-4 h-4 bg-primary-500 rounded"></div>
+                    <span class="text-sm text-neutral-300">#FF6B35</span>
+                  </div>
+                  <div class="flex items-center space-x-2">
+                    <div class="w-4 h-4 bg-primary-400 rounded"></div>
+                    <span class="text-sm text-neutral-300">#FF8E53</span>
+                  </div>
+                  <div class="flex items-center space-x-2">
+                    <div class="w-4 h-4 bg-primary-700 rounded"></div>
+                    <span class="text-sm text-neutral-300">#E55A2B</span>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h4 class="font-semibold mb-4">Destekleyici Renkler</h4>
+                <div class="space-y-2">
+                  <div class="flex items-center space-x-2">
+                    <div class="w-4 h-4 bg-white rounded border"></div>
+                    <span class="text-sm text-neutral-300">#FFFFFF</span>
+                  </div>
+                  <div class="flex items-center space-x-2">
+                    <div class="w-4 h-4 bg-neutral-900 rounded"></div>
+                    <span class="text-sm text-neutral-300">#2C3E50</span>
+                  </div>
+                  <div class="flex items-center space-x-2">
+                    <div class="w-4 h-4 bg-neutral-50 rounded border"></div>
+                    <span class="text-sm text-neutral-300">#F8F9FA</span>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h4 class="font-semibold mb-4">Öne Çıkan Özellikler</h4>
+                <div class="space-y-2 text-sm text-neutral-300">
+                  <p>Gelişmiş AI ve OCR</p>
+                  <p>Türkiye'ye Özel Lokalizasyon</p>
+                  <p>Kullanıcı Dostu Arayüz</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="border-t border-neutral-700 pt-8">
+              <p class="text-neutral-400 text-sm">
+                Bu rapor, <span class="font-drugs">nexpens</span> yazılımının marka kimliği, benzersiz avantajları ve pazar konumlandırması hakkında detaylı bilgi sağlamaktadır.
+              </p>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </main>
+
+    <script>
+        // Initialize Mermaid
+        document.addEventListener('DOMContentLoaded', function() {
+            mermaid.initialize({ 
+                startOnLoad: true,
+                theme: 'base',
+                themeVariables: {
+                    primaryColor: '#FF6B35',
+                    primaryTextColor: '#FFFFFF',
+                    primaryBorderColor: '#E55A2B',
+                    lineColor: '#E55A2B',
+                    secondaryColor: '#FF8E53',
+                    tertiaryColor: '#2C3E50',
+                    background: '#FFFFFF',
+                    mainBkg: '#FF6B35',
+                    secondBkg: '#FF8E53',
+                    tertiaryBkg: '#2C3E50',
+                    fontFamily: 'Inter, sans-serif',
+                    fontSize: '14px'
+                },
+                flowchart: {
+                    useMaxWidth: true,
+                    htmlLabels: true,
+                    curve: 'basis'
+                }
+            });
+
+            // Initialize Mermaid Controls for zoom and pan
+            initializeMermaidControls();
+        });
+
+        // Initialize Mermaid Controls for zoom and pan
+        function initializeMermaidControls() {
+            const containers = document.querySelectorAll('.mermaid-container');
+
+            containers.forEach(container => {
+            const mermaidElement = container.querySelector('.mermaid');
+            let scale = 1;
+            let isDragging = false;
+            let startX, startY, translateX = 0, translateY = 0;
+
+            // 触摸相关状态
+            let isTouch = false;
+            let touchStartTime = 0;
+            let initialDistance = 0;
+            let initialScale = 1;
+            let isPinching = false;
+
+            // Zoom controls
+            const zoomInBtn = container.querySelector('.zoom-in');
+            const zoomOutBtn = container.querySelector('.zoom-out');
+            const resetBtn = container.querySelector('.reset-zoom');
+            const fullscreenBtn = container.querySelector('.fullscreen');
+
+            function updateTransform() {
+                mermaidElement.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+
+                if (scale > 1) {
+                container.classList.add('zoomed');
+                } else {
+                container.classList.remove('zoomed');
+                }
+
+                mermaidElement.style.cursor = isDragging ? 'grabbing' : 'grab';
+            }
+
+            if (zoomInBtn) {
+                zoomInBtn.addEventListener('click', () => {
+                scale = Math.min(scale * 1.25, 4);
+                updateTransform();
+                });
+            }
+
+            if (zoomOutBtn) {
+                zoomOutBtn.addEventListener('click', () => {
+                scale = Math.max(scale / 1.25, 0.3);
+                if (scale <= 1) {
+                    translateX = 0;
+                    translateY = 0;
+                }
+                updateTransform();
+                });
+            }
+
+            if (resetBtn) {
+                resetBtn.addEventListener('click', () => {
+                scale = 1;
+                translateX = 0;
+                translateY = 0;
+                updateTransform();
+                });
+            }
+
+            if (fullscreenBtn) {
+                fullscreenBtn.addEventListener('click', () => {
+                if (container.requestFullscreen) {
+                    container.requestFullscreen();
+                } else if (container.webkitRequestFullscreen) {
+                    container.webkitRequestFullscreen();
+                } else if (container.msRequestFullscreen) {
+                    container.msRequestFullscreen();
+                }
+                });
+            }
+
+            // Mouse Events
+            mermaidElement.addEventListener('mousedown', (e) => {
+                if (isTouch) return; // 如果是触摸设备，忽略鼠标事件
+
+                isDragging = true;
+                startX = e.clientX - translateX;
+                startY = e.clientY - translateY;
+                mermaidElement.style.cursor = 'grabbing';
+                updateTransform();
+                e.preventDefault();
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (isDragging && !isTouch) {
+                translateX = e.clientX - startX;
+                translateY = e.clientY - startY;
+                updateTransform();
+                }
+            });
+
+            document.addEventListener('mouseup', () => {
+                if (isDragging && !isTouch) {
+                isDragging = false;
+                mermaidElement.style.cursor = 'grab';
+                updateTransform();
+                }
+            });
+
+            document.addEventListener('mouseleave', () => {
+                if (isDragging && !isTouch) {
+                isDragging = false;
+                mermaidElement.style.cursor = 'grab';
+                updateTransform();
+                }
+            });
+
+            // 获取两点之间的距离
+            function getTouchDistance(touch1, touch2) {
+                return Math.hypot(
+                touch2.clientX - touch1.clientX,
+                touch2.clientY - touch1.clientY
+                );
+            }
+
+            // Touch Events - 触摸事件处理
+            mermaidElement.addEventListener('touchstart', (e) => {
+                isTouch = true;
+                touchStartTime = Date.now();
+
+                if (e.touches.length === 1) {
+                // 单指拖动
+                isPinching = false;
+                isDragging = true;
+
+                const touch = e.touches[0];
+                startX = touch.clientX - translateX;
+                startY = touch.clientY - translateY;
+
+                } else if (e.touches.length === 2) {
+                // 双指缩放
+                isPinching = true;
+                isDragging = false;
+
+                const touch1 = e.touches[0];
+                const touch2 = e.touches[1];
+                initialDistance = getTouchDistance(touch1, touch2);
+                initialScale = scale;
+                }
+
+                e.preventDefault();
+            }, { passive: false });
+
+            mermaidElement.addEventListener('touchmove', (e) => {
+                if (e.touches.length === 1 && isDragging && !isPinching) {
+                // 单指拖动
+                const touch = e.touches[0];
+                translateX = touch.clientX - startX;
+                translateY = touch.clientY - startY;
+                updateTransform();
+
+                } else if (e.touches.length === 2 && isPinching) {
+                // 双指缩放
+                const touch1 = e.touches[0];
+                const touch2 = e.touches[1];
+                const currentDistance = getTouchDistance(touch1, touch2);
+
+                if (initialDistance > 0) {
+                    const newScale = Math.min(Math.max(
+                    initialScale * (currentDistance / initialDistance),
+                    0.3
+                    ), 4);
+                    scale = newScale;
+                    updateTransform();
+                }
+                }
+
+                e.preventDefault();
+            }, { passive: false });
+
+            mermaidElement.addEventListener('touchend', (e) => {
+                // 重置状态
+                if (e.touches.length === 0) {
+                isDragging = false;
+                isPinching = false;
+                initialDistance = 0;
+
+                // 延迟重置isTouch，避免鼠标事件立即触发
+                setTimeout(() => {
+                    isTouch = false;
+                }, 100);
+                } else if (e.touches.length === 1 && isPinching) {
+                // 从双指变为单指，切换为拖动模式
+                isPinching = false;
+                isDragging = true;
+
+                const touch = e.touches[0];
+                startX = touch.clientX - translateX;
+                startY = touch.clientY - translateY;
+                }
+
+                updateTransform();
+            });
+
+            mermaidElement.addEventListener('touchcancel', (e) => {
+                isDragging = false;
+                isPinching = false;
+                initialDistance = 0;
+
+                setTimeout(() => {
+                isTouch = false;
+                }, 100);
+
+                updateTransform();
+            });
+
+            // Enhanced wheel zoom with better center point handling
+            container.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                const rect = container.getBoundingClientRect();
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+
+                const delta = e.deltaY > 0 ? 0.9 : 1.1;
+                const newScale = Math.min(Math.max(scale * delta, 0.3), 4);
+
+                // Adjust translation to zoom towards center
+                if (newScale !== scale) {
+                const scaleDiff = newScale / scale;
+                translateX = translateX * scaleDiff;
+                translateY = translateY * scaleDiff;
+                scale = newScale;
+
+                if (scale <= 1) {
+                    translateX = 0;
+                    translateY = 0;
+                }
+
+                updateTransform();
+                }
+            });
+
+            // Initialize display
+            updateTransform();
+            });
+        }
+
+        // Smooth scrolling for TOC links
+        document.querySelectorAll('.toc-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                
+                if (targetElement) {
+                    const offsetTop = targetElement.offsetTop - 100;
+                    window.scrollTo({
+                        top: offsetTop,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Active section highlighting
+        function updateActiveSection() {
+            const sections = document.querySelectorAll('section[id]');
+            const tocLinks = document.querySelectorAll('.toc-link');
+            
+            let currentSection = '';
+            const scrollPosition = window.scrollY + 150;
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                
+                if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+            
+            tocLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + currentSection) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', updateActiveSection);
+        updateActiveSection(); // Initial call
+
+        // Mobile TOC toggle (for responsive design)
+        function toggleTOC() {
+            const toc = document.querySelector('.toc-fixed');
+            toc.classList.toggle('active');
+        }
+
+        // Add mobile menu button for smaller screens
+        if (window.innerWidth <= 1024) {
+            const mobileButton = document.createElement('button');
+            mobileButton.innerHTML = '<i class="fas fa-bars"></i>';
+            mobileButton.className = 'fixed top-4 left-4 z-50 bg-primary-500 text-white p-3 rounded-lg shadow-lg lg:hidden';
+            mobileButton.onclick = toggleTOC;
+            document.body.appendChild(mobileButton);
+        }
+
+        // Close TOC when clicking outside on mobile
+        document.addEventListener('click', function(event) {
+            const toc = document.querySelector('.toc-fixed');
+            const mobileButton = document.querySelector('button[onclick="toggleTOC()"]');
+            
+            if (window.innerWidth <= 1024 && toc.classList.contains('active')) {
+                if (!toc.contains(event.target) && event.target !== mobileButton) {
+                    toc.classList.remove('active');
+                }
+            }
+        });
+    </script>
+  
+
+</body></html>
